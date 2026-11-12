@@ -1,0 +1,29 @@
+name: C Build & Unit Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential ${{ matrix.compiler }}
+
+      - name: Build Application
+        run: make CC=${{ matrix.compiler }}
+
+      - name: Run Unit Tests
+        run: make test CC=${{ matrix.compiler }}
